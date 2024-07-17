@@ -3,6 +3,8 @@ from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 import os
 from tracks import tracks_to_search
+from tracks import playlist_name
+from tracks import playlist_description
 
 # Carica le variabili d'ambiente dal file .env
 load_dotenv()
