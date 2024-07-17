@@ -7,8 +7,8 @@ Questo progetto crea e aggiorna una playlist Spotify con una lista predefinita d
 1. Clona il repository:
 
 ```bash
-git clone https://github.com/tuo-username/spotify-playlist-creator.git
-cd spotify-playlist-creator
+git clone https://github.com/TobiaRigon/Spotify_Auto_Playlist.git
+cd Spotify_Auto_Playlist
 ```
 
 2. Installa le librerie richieste:
