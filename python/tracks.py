@@ -1,0 +1,36 @@
+# Nome della playlist
+playlist_name = 'Office Vibes: Chill & Cheerful'
+playlist_description = 'A mix of chill and cheerful tunes for a productive office environment.'
+tracks_to_search = [
+    'Lebanese Blonde Thievery Corporation',
+    'Cirrus Bonobo',
+    'La Femme d\'Argent Air',
+    'In the Waiting Line Zero 7',
+    'Rose Rouge St. Germain',
+    'High Noon Kruder & Dorfmeister',
+    'All Night Parov Stelar',
+    'To Build a Home The Cinematic Orchestra',
+    'Teardrop Massive Attack',
+    'You Wish Nightmares on Wax',
+    'Viama Moodorama',
+    'Until the Morning Thievery Corporation',
+    'Kiara Bonobo',
+    'Cherry Blossom Girl Air',
+    'Destiny Zero 7',
+    'Sure Thing St. Germain',
+    'Black Baby Kruder & Dorfmeister',
+    'The Sun Parov Stelar',
+    'Breathe The Cinematic Orchestra',
+    'Protection Massive Attack',
+    'Flip Ya Lid Nightmares on Wax',
+    'Mind Traffic Moodorama',
+    'Viene de Mi La Yegros',
+    'Jardines Chancha Via Circuito',
+    'Soy Yo Bomba Estéreo',
+    'La Plata Quantic',
+    'Cumbia del Olvido Nicola Cruz',
+    'Yo Voy Ganao Systema Solar',
+    'Chicha Love Cumbia Cosmonauts',
+    'Suena Ondatrópica',
+    'Colombia Tierra Querida Lucho Bermúdez'
+]
