@@ -1,5 +1,6 @@
 playlist_name = 'Office Vibes: Cheerful & Energetic'
 playlist_description = 'Una selezione di brani allegri e energici per mantenere la produttività e il buon umore in ufficio.'
+playlist_public = False
 tracks_to_search = [
     'Electric Fel MGMT',
     'Time too Pretend MGMT',

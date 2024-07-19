@@ -4,9 +4,7 @@ from dotenv import load_dotenv
 import os
 import logging
 from fuzzywuzzy import fuzz
-from tracks import tracks_to_search
-from tracks import playlist_name
-from tracks import playlist_description
+from tracks import tracks_to_search, playlist_name, playlist_description, playlist_public
 
 # Configura il logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -20,7 +18,7 @@ client_secret = os.getenv('CLIENT_SECRET')
 redirect_uri = os.getenv('REDIRECT_URI')
 
 # Autenticazione
-scope = 'playlist-modify-private playlist-read-private'
+scope = 'playlist-modify-private playlist-modify-public playlist-read-private'
 try:
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
                                                    client_secret=client_secret,
@@ -83,24 +81,24 @@ def find_playlist_by_name(playlist_name):
                 existing_playlist_name_trimmed = playlist['name'].strip().lower()
                 if existing_playlist_name_trimmed == playlist_name_trimmed:
                     logging.info("Found matching playlist by name: '%s' (ID: %s)", playlist['name'], playlist['id'])
-                    return playlist['id']
+                    return playlist['id'], playlist['public']
             if playlists['next']:
                 playlists = sp.next(playlists)
             else:
                 playlists = None
         logging.info("No matching playlist found for name: '%s'", playlist_name)
-        return None
+        return None, None
     except spotipy.SpotifyException as e:
         logging.error("Errore durante la ricerca della playlist '%s': %s", playlist_name, e)
-        return None
+        return None, None
 
 # Cerca la playlist
-playlist_id = find_playlist_by_name(playlist_name)
+playlist_id, is_public = find_playlist_by_name(playlist_name)
 
-# Se la playlist non esiste, creala come privata
+# Se la playlist non esiste, creala con la visibilità corretta
 if playlist_id is None:
     try:
-        playlist = sp.user_playlist_create(user_id, playlist_name, public=False, description=playlist_description)
+        playlist = sp.user_playlist_create(user_id, playlist_name, public=playlist_public, description=playlist_description)
         playlist_id = playlist['id']
         logging.info("Created new playlist '%s' with ID %s", playlist_name, playlist_id)
     except spotipy.SpotifyException as e:
@@ -109,8 +107,8 @@ if playlist_id is None:
 else:
     logging.info("Updating existing playlist '%s' with ID %s", playlist_name, playlist_id)
     try:
-        # Aggiorna la descrizione della playlist esistente
-        sp.user_playlist_change_details(user_id, playlist_id, description=playlist_description)
+        # Aggiorna la descrizione e la visibilità della playlist esistente
+        sp.user_playlist_change_details(user_id, playlist_id, description=playlist_description, public=playlist_public)
     except spotipy.SpotifyException as e:
         logging.error("Errore durante l'aggiornamento della descrizione della playlist '%s': %s", playlist_name, e)
         raise
