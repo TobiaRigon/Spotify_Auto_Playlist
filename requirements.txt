@@ -1,4 +1,0 @@
-spotipy
-python-dotenv
-fuzzywuzzy
-python-Levenshtein

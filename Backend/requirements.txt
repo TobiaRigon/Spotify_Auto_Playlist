@@ -1,0 +1,6 @@
+spotipy
+python-dotenv
+fuzzywuzzy
+python-Levenshtein
+Flask
+flask-cors
