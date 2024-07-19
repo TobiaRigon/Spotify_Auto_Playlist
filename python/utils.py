@@ -28,7 +28,7 @@ def load_env_variables():
     return client_id, client_secret, redirect_uri
 
 def authenticate_spotify(client_id, client_secret, redirect_uri):
-    """Autentica l'utente su Spotify."""
+    """Autentica l'utente su Spotify utilizzando le credenziali fornite."""
     scope = 'playlist-modify-private playlist-modify-public playlist-read-private'
     try:
         sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id,
@@ -41,7 +41,7 @@ def authenticate_spotify(client_id, client_secret, redirect_uri):
         raise
 
 def get_user_id(sp):
-    """Ottiene l'ID dell'utente autenticato."""
+    """Ottiene l'ID dell'utente autenticato su Spotify."""
     try:
         user_id = sp.current_user()['id']
         return user_id
@@ -85,7 +85,7 @@ def get_track_uri(sp, track_name):
         return None
 
 def find_playlist_by_name(sp, playlist_name):
-    """Cerca una playlist esistente per nome."""
+    """Cerca una playlist esistente per nome e ritorna il suo ID e visibilità."""
     try:
         logging.info("Checking existing playlists for a match...")
         playlists = sp.current_user_playlists(limit=50)
