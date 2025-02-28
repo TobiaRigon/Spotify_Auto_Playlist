@@ -1,13 +1,13 @@
-# Definisce il nome della playlist
+# Define the playlist name
 playlist_name = 'Cooling Vibes: Chill & Refresh'
 
-# Descrizione della playlist
-playlist_description = 'Brani freschi e rilassanti per affrontare il caldo estivo.'
+# Playlist description
+playlist_description = 'Fresh and relaxing tracks to beat the summer heat.'
 
-# Visibilità della playlist: True se pubblica, False se privata
+# Playlist visibility: True if public, False if private
 playlist_public = True
 
-# Lista di tracce da cercare e aggiungere alla playlist
+# List of tracks to search and add to the playlist
 tracks_to_search = [
     'Summertime Ella Fitzgerald & Louis Armstrong',
     'Under the Boardwalk The Drifters',

@@ -1,17 +1,17 @@
 # Spotify Auto Playlist
 
-Questo progetto crea e aggiorna una playlist Spotify con una lista predefinita di tracce utilizzando l'API Web di Spotify e la libreria spotipy per Python.
+This project creates and updates a Spotify playlist with a predefined list of tracks using the Spotify Web API and the Spotipy library for Python.
 
-## Installazione
+## Installation
 
-1. Clona il repository:
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/TobiaRigon/Spotify_Auto_Playlist.git
    cd Spotify_Auto_Playlist
    ```
 
-2. Crea un ambiente virtuale e attivalo (opzionale ma consigliato):
+2. Create and activate a virtual environment (optional but recommended):
 
    - **Windows:**
      ```bash
@@ -24,44 +24,44 @@ Questo progetto crea e aggiorna una playlist Spotify con una lista predefinita d
      source venv/bin/activate
      ```
 
-3. Installa le librerie richieste:
+3. Install required libraries:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Crea un file `.env` nella directory principale del progetto con le tue credenziali Spotify:
+4. Create a `.env` file in the project's root directory with your Spotify credentials:
 
    ```plaintext
-   CLIENT_ID=il_tuo_spotify_client_id
-   CLIENT_SECRET=il_tuo_spotify_client_secret
+   CLIENT_ID=your_spotify_client_id
+   CLIENT_SECRET=your_spotify_client_secret
    REDIRECT_URI=http://localhost:8888/callback
    ```
 
-   - Puoi ottenere le credenziali creando un'applicazione su [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications).
+   - You can obtain your credentials by creating an application on the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications).
 
-5. Aggiorna il nome della playlist, la descrizione e la lista delle tracce nel file `tracks.py`:
+5. Update the playlist name, description, and track list in the `tracks.py` file:
 
    ```python
-   playlist_name = 'Nome della tua playlist'
-   playlist_description = 'Descrizione della tua playlist'
+   playlist_name = 'Your Playlist Name'
+   playlist_description = 'Your Playlist Description'
    tracks_to_search = [
-       'Nome Traccia Artista',
-       'Nome Traccia Artista',
-       # Aggiungi altre tracce qui
+       'Track Name Artist',
+       'Track Name Artist',
+       # Add more tracks here
    ]
    ```
 
-## Uso
+## Usage
 
-1. Esegui lo script:
+1. Run the script:
 
    ```bash
    python auto_playlist.py
    ```
 
-2. Lo script si autenticherà con Spotify e creerà o aggiornerà la playlist con le tracce specificate.
+2. The script will authenticate with Spotify and create or update the playlist with the specified tracks.
 
-## Licenza
+## License
 
-Questo progetto è licenziato sotto la Licenza MIT.
+This project is licensed under the MIT License.
