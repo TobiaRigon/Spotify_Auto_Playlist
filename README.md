@@ -40,7 +40,7 @@ This project creates and updates a Spotify playlist with a predefined list of tr
 
    - You can obtain your credentials by creating an application on the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications).
 
-5. Update the playlist name, description, and track list in the `tracks.py` file:
+5. Update the playlist name, description, and track list in the `playlist.py` file:
 
    ```python
    playlist_name = 'Your Playlist Name'
