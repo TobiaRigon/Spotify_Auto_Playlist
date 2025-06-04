@@ -5,7 +5,7 @@
   <title>Spotify Auto Playlist</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-router@3/dist/vue-router.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/http-vue-loader"></script>
+  <script src="https://unpkg.com/vue3-sfc-loader"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -22,9 +22,27 @@
   </div>
 
   <script>
-  Vue.component('info-modal', httpVueLoader('/static/components/InfoModal.vue'));
-  const Home = httpVueLoader('/static/components/Home.vue');
-  const About = httpVueLoader('/static/components/About.vue');
+  const { loadModule } = window['vue3-sfc-loader'];
+  const options = {
+    moduleCache: { vue: Vue },
+    async getFile(url) {
+      const res = await fetch(url);
+      if (!res.ok)
+        throw Object.assign(new Error(res.statusText + ' ' + url), { res });
+      return {
+        getContentData: asBinary => asBinary ? res.arrayBuffer() : res.text(),
+      };
+    },
+    addStyle(textContent) {
+      const style = Object.assign(document.createElement('style'), { textContent });
+      const ref = document.head.getElementsByTagName('style')[0] || null;
+      document.head.insertBefore(style, ref);
+    },
+  };
+
+  Vue.component('info-modal', () => loadModule('/static/components/InfoModal.vue', options));
+  const Home = () => loadModule('/static/components/Home.vue', options);
+  const About = () => loadModule('/static/components/About.vue', options);
   Vue.use(VueRouter);
   const routes = [
     { path: '/', component: Home },
