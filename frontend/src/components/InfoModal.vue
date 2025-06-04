@@ -3,17 +3,37 @@
     <div class="modal-content">
       <h3>Come ottenere le credenziali Spotify</h3>
       <p>
+<<<<<<< HEAD
         Crea un'applicazione sul
         <a href="https://developer.spotify.com/dashboard/applications" target="_blank">Spotify Developer Dashboard</a>
         e copia CLIENT_ID e CLIENT_SECRET.
+=======
+        1. Vai al
+        <a
+          href="https://developer.spotify.com/dashboard/applications"
+          target="_blank"
+          >Spotify Developer Dashboard</a
+        >.<br />
+        2. Accedi con il tuo account Spotify e clicca su “Create an App”.<br />
+        3. Inserisci nome e descrizione dell’app (puoi mettere qualsiasi
+        cosa).<br />
+        4. Durante la creazione, nella sezione <strong>Redirect URI</strong>,
+        inserisci: <code>http://localhost:8888/callback/</code><br />
+        5. Una volta creata l’app, accedi ai suoi dettagli e copia
+        <strong>Client ID</strong> e <strong>Client Secret</strong>.
+>>>>>>> 6880du-codex/scrivi-e-committa-agent.md
       </p>
       <button @click="$emit('close')">Chiudi</button>
     </div>
   </div>
 </template>
 
+<<<<<<< HEAD
 <script setup>
 </script>
+=======
+<script setup></script>
+>>>>>>> 6880du-codex/scrivi-e-committa-agent.md
 
 <style scoped>
 .modal {

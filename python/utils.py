@@ -50,36 +50,38 @@ def get_user_id(sp):
         raise
 
 def get_track_uri(sp, track_name):
-    """Retrieves the URI of a track on Spotify given a search string."""
+    """Retrieve the URI of a track on Spotify using fuzzy matching."""
     try:
-        results = sp.search(q=track_name, type='track', limit=1)
+        results = sp.search(q=track_name, type='track', limit=10)
         items = results['tracks']['items']
-        if items:
-            track = items[0]
-            track_title = track['name'].lower()
-            track_artists = [artist['name'].lower() for artist in track['artists']]
-            
-            # Separate track title from artist if specified
-            if ' - ' in track_name:
-                search_title, search_artist = track_name.lower().split(' - ', 1)
-                artist_match = any(fuzz.partial_ratio(search_artist, artist) > 30 for artist in track_artists)
-                if fuzz.partial_ratio(track_title, search_title) > 30 and artist_match:
-                    return track['uri']
-            else:
-                search_title = track_name.lower()
-                if fuzz.partial_ratio(track_title, search_title) > 30:
-                    return track['uri']
-                
-            # Check for closest match
-            if fuzz.partial_ratio(track_title, search_title) > 40:
-                logging.warning("Track '%s' not found. Closest match: '%s' by %s", track_name, track_title, ', '.join(track_artists))
-                return track['uri']
-            else:
-                logging.warning("Track '%s' not found. Closest match: '%s' by %s", track_name, track_title, ', '.join(track_artists))
-                return None
-        else:
+        if not items:
             logging.warning("Track '%s' not found.", track_name)
             return None
+
+        best_score = 0
+        best_uri = None
+        best_desc = None
+
+        for track in items:
+            track_title = track['name']
+            track_artists = [artist['name'] for artist in track['artists']]
+            candidate = f"{track_title} {' '.join(track_artists)}".lower()
+            score = fuzz.token_set_ratio(track_name.lower(), candidate)
+
+            if score > best_score:
+                best_score = score
+                best_uri = track['uri']
+                best_desc = f"{track_title} by {', '.join(track_artists)}"
+
+        if best_score < 60:
+            logging.warning(
+                "Track '%s' not found. Best match: %s (score %d)",
+                track_name,
+                best_desc,
+                best_score,
+            )
+
+        return best_uri
     except spotipy.SpotifyException as e:
         logging.error("Error searching for track '%s': %s", track_name, e)
         return None
