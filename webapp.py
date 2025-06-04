@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from utils import (
+from python.utils import (
     authenticate_spotify,
     get_user_id,
     create_or_update_playlist,
@@ -40,4 +40,5 @@ def create_playlist():
     return jsonify({"status": "success"})
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5000, debug=True)
+
