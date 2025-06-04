@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify Auto Playlist</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>Spotify Auto Playlist</h1>
+    <form @submit.prevent="submitForm">
+        <div>
+            <label>CLIENT_ID:</label>
+            <input type="text" v-model="client_id" required>
+        </div>
+        <div>
+            <label>CLIENT_SECRET:</label>
+            <input type="password" v-model="client_secret" required>
+        </div>
+        <div>
+            <label>REDIRECT_URI:</label>
+            <input type="text" v-model="redirect_uri" required>
+        </div>
+        <div>
+            <label>Nome Playlist:</label>
+            <input type="text" v-model="playlist_name" required>
+        </div>
+        <div>
+            <label>Descrizione Playlist:</label>
+            <input type="text" v-model="playlist_description">
+        </div>
+        <div>
+            <label><input type="checkbox" v-model="playlist_public"> Pubblica</label>
+        </div>
+        <div>
+            <label>Tracce (una per riga):</label><br>
+            <textarea v-model="tracks_text" rows="10" cols="40"></textarea>
+        </div>
+        <button type="submit">Crea Playlist</button>
+    </form>
+    <p v-if="message">{{ message }}</p>
+</div>
+<script>
+new Vue({
+    el: '#app',
+    data: {
+        client_id: '',
+        client_secret: '',
+        redirect_uri: 'http://localhost:8888/callback/',
+        playlist_name: '',
+        playlist_description: '',
+        playlist_public: true,
+        tracks_text: '',
+        message: ''
+    },
+    methods: {
+        submitForm() {
+            const tracks = this.tracks_text.split('\n').map(t => t.trim()).filter(t => t);
+            fetch('/create_playlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    client_id: this.client_id,
+                    client_secret: this.client_secret,
+                    redirect_uri: this.redirect_uri,
+                    playlist_name: this.playlist_name,
+                    playlist_description: this.playlist_description,
+                    playlist_public: this.playlist_public,
+                    tracks: tracks
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                this.message = data.status === 'success' ? 'Playlist aggiornata!' : 'Errore';
+            })
+            .catch(() => {
+                this.message = 'Errore di rete';
+            });
+        }
+    }
+});
+</script>
+</body>
+</html>
