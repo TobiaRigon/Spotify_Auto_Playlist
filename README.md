@@ -62,6 +62,16 @@ This project creates and updates a Spotify playlist with a predefined list of tr
 
 2. The script will authenticate with Spotify and create or update the playlist with the specified tracks.
 
+## Webapp
+
+In alternativa puoi avviare una piccola webapp che consente di inserire le credenziali e la lista di brani direttamente dal browser:
+
+```bash
+python webapp.py
+```
+
+Raggiungi `http://localhost:5000` con il tuo browser e compila il modulo per creare o aggiornare la playlist.
+
 ## License
 
 This project is licensed under the MIT License.
