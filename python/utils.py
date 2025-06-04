@@ -168,8 +168,9 @@ def generate_tracks_ai(prompt, n=10):
     messages = [{
         "role": "user",
         "content": (
-            f"Elenca {n} canzoni con artista in base a questo prompt: {prompt}. "
-            "Rispondi in italiano con un elenco numerato."
+            f"Elenca {n} brani in base a questo prompt: {prompt}. "
+            "Rispondi in italiano senza numerazione, "
+            "una riga per brano nel formato 'Titolo - Artista'."
         ),
     }]
     try:
@@ -180,11 +181,15 @@ def generate_tracks_ai(prompt, n=10):
 
     tracks = []
     for line in response.splitlines():
-        m = re.match(r"\d+\.\s*\**\"?([^\"]+)\"?\s*(?:di|by)?\s*(.+)?", line.strip())
-        if m:
-            title = m.group(1).strip()
-            artist = m.group(2).strip() if m.group(2) else ""
-            tracks.append(f"{title} {artist}".strip())
+        line = line.strip()
+        if not line:
+            continue
+        line = re.sub(r"^\d+[\.)]\s*", "", line)
+        parts = re.split(r"\s*(?:-|–|di|by)\s+", line, 1)
+        if len(parts) >= 2:
+            title = parts[0].strip(' "')
+            artist = parts[1].strip(' "')
+            tracks.append(f"{title} - {artist}")
     return tracks
 
 

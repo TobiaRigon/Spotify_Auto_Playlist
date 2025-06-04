@@ -78,7 +78,7 @@ Poi lancia il server Flask:
 python webapp.py
 ```
 
-Apri `http://localhost:5000` e compila il modulo per creare o aggiornare la playlist. Puoi generare automaticamente titolo, descrizione e brani inserendo un testo nel campo "Prompt AI" e cliccando **Genera con AI**. L'interfaccia usa **Vue Router** per navigare tra la pagina principale e la sezione "About" e mostra un modale di aiuto per ottenere le credenziali Spotify.
+Apri `http://localhost:5000` e compila il modulo per creare o aggiornare la playlist. Inserisci un testo nel campo "Prompt AI" e clicca **Genera con AI** per ottenere automaticamente nome, descrizione e un elenco di brani (uno per riga nel formato "Titolo - Artista"). L'interfaccia usa **Vue Router** per navigare tra la pagina principale e la sezione "About" e mostra un modale di aiuto per ottenere le credenziali Spotify.
 
 ## License
 
