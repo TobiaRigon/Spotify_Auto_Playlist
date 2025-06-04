@@ -64,21 +64,21 @@ This project creates and updates a Spotify playlist with a predefined list of tr
 
 ## Webapp
 
-In alternativa puoi avviare una piccola webapp con interfaccia Vue.js che consente di inserire le credenziali e la lista di brani direttamente dal browser:
+In alternativa puoi avviare una webapp Vue 3. Dalla cartella `frontend` installa le dipendenze e genera i file statici:
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+Poi lancia il server Flask:
 
 ```bash
 python webapp.py
 ```
 
-Raggiungi `http://localhost:5000` con il tuo browser e compila il modulo per creare o aggiornare la playlist.
-
-La pagina permette anche di generare automaticamente il nome, la descrizione e l'elenco delle tracce con un semplice prompt testuale grazie ad un piccolo modello AI gratuito. Inserisci il tema desiderato nel campo "Prompt AI" e clicca su **Genera con AI**: comparirà un messaggio di caricamento e i campi verranno compilati in automatico.
-
-La cartella `static/` contiene un file `styles.css` con alcuni stili di base per rendere più gradevole l'interfaccia Vue.
-
-L'app utilizza anche **Vue Router** per un semplice menu di navigazione tra la pagina principale e una sezione "About".
-
-La parte frontend è ora suddivisa in componenti `.vue` nella cartella `static/components` e viene caricata al volo tramite **http-vue-loader**. Il campo `REDIRECT_URI` resta nascosto finché non si spunta l'opzione *Custom REDIRECT_URI* e un pulsante `?` accanto alle credenziali apre un modale con le istruzioni e il link al sito Spotify per ottenerle.
+Apri `http://localhost:5000` e compila il modulo per creare o aggiornare la playlist. Puoi generare automaticamente titolo, descrizione e brani inserendo un testo nel campo "Prompt AI" e cliccando **Genera con AI**. L'interfaccia usa **Vue Router** per navigare tra la pagina principale e la sezione "About" e mostra un modale di aiuto per ottenere le credenziali Spotify.
 
 ## License
 

@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, send_from_directory
+import os
 from python.utils import (
     authenticate_spotify,
     get_user_id,
@@ -8,11 +9,11 @@ from python.utils import (
     generate_playlist_details_ai,
 )
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend/dist', static_url_path='')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return app.send_static_file('index.html')
 
 
 @app.route('/create_playlist', methods=['POST'])
@@ -50,6 +51,13 @@ def generate_tracks():
     tracks = generate_tracks_ai(prompt, count)
     name, description = generate_playlist_details_ai(prompt)
     return jsonify({'tracks': tracks, 'name': name, 'description': description})
+
+@app.route('/<path:path>')
+def static_proxy(path):
+    file_path = os.path.join(app.static_folder, path)
+    if os.path.exists(file_path):
+        return send_from_directory(app.static_folder, path)
+    return app.send_static_file('index.html')
 
 if __name__ == '__main__':
     app.run(port=5000)
