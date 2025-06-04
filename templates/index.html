@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify Auto Playlist</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-router@3/dist/vue-router.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<div id="app">
+    <header>
+        <nav>
+            <router-link to="/" exact>Home</router-link>
+            <router-link to="/about">About</router-link>
+        </nav>
+    </header>
+    <main>
+        <router-view></router-view>
+    </main>
+</div>
+
+<script type="text/x-template" id="home-template">
+  <div>
+    <h1>Spotify Auto Playlist</h1>
+    <form @submit.prevent="submitForm">
+        <div class="form-group">
+            <label>CLIENT_ID:</label>
+            <input type="text" v-model="client_id" required>
+        </div>
+        <div class="form-group">
+            <label>CLIENT_SECRET:</label>
+            <input type="password" v-model="client_secret" required>
+        </div>
+        <div class="form-group">
+            <label>REDIRECT_URI:</label>
+            <input type="text" v-model="redirect_uri" required>
+        </div>
+        <div class="form-group">
+            <label>Nome Playlist:</label>
+            <input type="text" v-model="playlist_name" required>
+        </div>
+        <div class="form-group">
+            <label>Descrizione Playlist:</label>
+            <input type="text" v-model="playlist_description">
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" v-model="playlist_public"> Pubblica</label>
+        </div>
+        <div class="form-group">
+            <label>Tracce (una per riga):</label><br>
+            <textarea v-model="tracks_text" rows="10"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Prompt AI:</label>
+            <input type="text" v-model="ai_prompt" placeholder="es. rock italiano anni 90">
+            <button type="button" @click="generateTracks" :disabled="loading">Genera con AI</button>
+            </div>
+        <button type="submit">Crea Playlist</button>
+    </form>
+    <p class="loading" v-if="loading">Generazione in corso...</p>
+    <p v-if="message">{{ message }}</p>
+  </div>
+</script>
+
+<script type="text/x-template" id="about-template">
+  <div>
+    <h1>About</h1>
+    <p>Semplice interfaccia Vue per creare playlist Spotify.</p>
+  </div>
+</script>
+
+<script>
+const Home = {
+    template: '#home-template',
+    data() {
+        return {
+            client_id: '',
+            client_secret: '',
+            redirect_uri: 'http://localhost:8888/callback/',
+            playlist_name: '',
+            playlist_description: '',
+            playlist_public: true,
+            tracks_text: '',
+            ai_prompt: '',
+            message: '',
+            loading: false
+        };
+    },
+    methods: {
+        submitForm() {
+            const tracks = this.tracks_text.split('\n').map(t => t.trim()).filter(t => t);
+            fetch('/create_playlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    client_id: this.client_id,
+                    client_secret: this.client_secret,
+                    redirect_uri: this.redirect_uri,
+                    playlist_name: this.playlist_name,
+                    playlist_description: this.playlist_description,
+                    playlist_public: this.playlist_public,
+                    tracks: tracks
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                this.message = data.status === 'success' ? 'Playlist aggiornata!' : 'Errore';
+            })
+            .catch(() => {
+                this.message = 'Errore di rete';
+            });
+        },
+        generateTracks() {
+            this.loading = true;
+            this.message = '';
+            fetch('/generate_tracks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: this.ai_prompt, count: 10 })
+            })
+            .then(r => r.json())
+            .then(data => {
+                this.tracks_text = data.tracks.join('\n');
+                this.playlist_name = data.name;
+                this.playlist_description = data.description;
+                this.loading = false;
+            })
+            .catch(() => {
+                this.message = 'Errore generazione AI';
+                this.loading = false;
+            });
+        }
+    }
+};
+
+const About = { template: '#about-template' };
+
+const router = new VueRouter({
+    routes: [
+        { path: '/', component: Home },
+        { path: '/about', component: About }
+    ]
+});
+
+new Vue({
+    el: '#app',
+    router
+});
+</script>
+</body>
+</html>
