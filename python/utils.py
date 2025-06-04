@@ -146,21 +146,34 @@ def add_tracks_to_playlist(sp, playlist_id, tracks_to_search, playlist_name):
         raise
 
 
+def _ask_g4f(messages):
+    """Tenta di ottenere una risposta usando diversi provider g4f."""
+    import g4f
+    providers = [g4f.Provider.FreeGpt, g4f.Provider.You, g4f.Provider.DeepSeek]
+    for provider in providers:
+        try:
+            return g4f.ChatCompletion.create(
+                model="gpt_4o",
+                provider=provider,
+                messages=messages,
+            )
+        except Exception as exc:
+            logging.warning("Provider %s fallito: %s", getattr(provider, "__name__", provider), exc)
+    raise RuntimeError("Nessun provider g4f disponibile")
+
+
 def generate_tracks_ai(prompt, n=10):
     """Genera una lista di titoli di canzoni usando un modello AI gratuito."""
     import re
+    messages = [{
+        "role": "user",
+        "content": (
+            f"Elenca {n} canzoni con artista in base a questo prompt: {prompt}. "
+            "Rispondi in italiano con un elenco numerato."
+        ),
+    }]
     try:
-        import g4f
-        messages = [{
-            "role": "user",
-            "content": f"Elenca {n} canzoni con artista in base a questo prompt: {prompt}." \
-                       " Rispondi in italiano con un elenco numerato."
-        }]
-        response = g4f.ChatCompletion.create(
-            model="gpt_4o",
-            provider=g4f.Provider.FreeGpt,
-            messages=messages,
-        )
+        response = _ask_g4f(messages)
     except Exception as e:
         logging.error("Errore generazione AI: %s", e)
         return []
@@ -177,20 +190,15 @@ def generate_tracks_ai(prompt, n=10):
 
 def generate_playlist_details_ai(prompt):
     """Genera nome e descrizione di una playlist dato un prompt."""
+    messages = [{
+        "role": "user",
+        "content": (
+            f"Suggerisci un nome e una breve descrizione per una playlist basata su questo prompt: {prompt}. "
+            "Rispondi in italiano nel formato:\nNome: <nome>\nDescrizione: <descrizione>"
+        ),
+    }]
     try:
-        import g4f
-        messages = [{
-            "role": "user",
-            "content": (
-                f"Suggerisci un nome e una breve descrizione per una playlist basata su questo prompt: {prompt}. "
-                "Rispondi in italiano nel formato:\nNome: <nome>\nDescrizione: <descrizione>"
-            ),
-        }]
-        response = g4f.ChatCompletion.create(
-            model="gpt_4o",
-            provider=g4f.Provider.FreeGpt,
-            messages=messages,
-        )
+        response = _ask_g4f(messages)
     except Exception as e:
         logging.error("Errore generazione AI: %s", e)
         return "Playlist AI", "Generata automaticamente"
