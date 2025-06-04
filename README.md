@@ -72,6 +72,8 @@ python webapp.py
 
 Raggiungi `http://localhost:5000` con il tuo browser e compila il modulo per creare o aggiornare la playlist.
 
+La cartella `static/` contiene un file `styles.css` con alcuni stili di base per rendere più gradevole l'interfaccia Vue.
+
 ## License
 
 This project is licensed under the MIT License.

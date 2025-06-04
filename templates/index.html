@@ -4,37 +4,38 @@
     <meta charset="UTF-8">
     <title>Spotify Auto Playlist</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 <div id="app">
     <h1>Spotify Auto Playlist</h1>
     <form @submit.prevent="submitForm">
-        <div>
+        <div class="form-group">
             <label>CLIENT_ID:</label>
             <input type="text" v-model="client_id" required>
         </div>
-        <div>
+        <div class="form-group">
             <label>CLIENT_SECRET:</label>
             <input type="password" v-model="client_secret" required>
         </div>
-        <div>
+        <div class="form-group">
             <label>REDIRECT_URI:</label>
             <input type="text" v-model="redirect_uri" required>
         </div>
-        <div>
+        <div class="form-group">
             <label>Nome Playlist:</label>
             <input type="text" v-model="playlist_name" required>
         </div>
-        <div>
+        <div class="form-group">
             <label>Descrizione Playlist:</label>
             <input type="text" v-model="playlist_description">
         </div>
-        <div>
+        <div class="form-group">
             <label><input type="checkbox" v-model="playlist_public"> Pubblica</label>
         </div>
-        <div>
+        <div class="form-group">
             <label>Tracce (una per riga):</label><br>
-            <textarea v-model="tracks_text" rows="10" cols="40"></textarea>
+            <textarea v-model="tracks_text" rows="10"></textarea>
         </div>
         <button type="submit">Crea Playlist</button>
     </form>
