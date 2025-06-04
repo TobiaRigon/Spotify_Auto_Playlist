@@ -144,3 +144,32 @@ def add_tracks_to_playlist(sp, playlist_id, tracks_to_search, playlist_name):
     except spotipy.SpotifyException as e:
         logging.error("Error updating playlist '%s': %s", playlist_name, e)
         raise
+
+
+def generate_tracks_ai(prompt, n=10):
+    """Genera una lista di titoli di canzoni usando un modello AI gratuito."""
+    import re
+    try:
+        import g4f
+        messages = [{
+            "role": "user",
+            "content": f"Elenca {n} canzoni con artista in base a questo prompt: {prompt}." \
+                       " Rispondi in italiano con un elenco numerato."
+        }]
+        response = g4f.ChatCompletion.create(
+            model="gpt_4o",
+            provider=g4f.Provider.FreeGpt,
+            messages=messages,
+        )
+    except Exception as e:
+        logging.error("Errore generazione AI: %s", e)
+        return []
+
+    tracks = []
+    for line in response.splitlines():
+        m = re.match(r"\d+\.\s*\**\"?([^\"]+)\"?\s*(?:di|by)?\s*(.+)?", line.strip())
+        if m:
+            title = m.group(1).strip()
+            artist = m.group(2).strip() if m.group(2) else ""
+            tracks.append(f"{title} {artist}".strip())
+    return tracks
