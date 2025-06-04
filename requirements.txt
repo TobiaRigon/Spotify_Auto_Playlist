@@ -2,3 +2,9 @@ spotipy
 python-dotenv
 fuzzywuzzy
 python-Levenshtein
+flask
+g4f
+curl_cffi
+undetected-chromedriver
+platformdirs
+nest_asyncio
