@@ -62,6 +62,28 @@ This project creates and updates a Spotify playlist with a predefined list of tr
 
 2. The script will authenticate with Spotify and create or update the playlist with the specified tracks.
 
+## Webapp
+
+In alternativa puoi avviare una webapp Vue 3. Dalla cartella `frontend` installa le dipendenze e genera i file statici:
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+Poi lancia il server Flask:
+
+```bash
+python webapp.py
+```
+
+Apri `http://localhost:5000` e compila il modulo per creare o aggiornare la playlist. Inserisci un testo nel campo "Prompt AI" e clicca **Genera con AI** per ottenere automaticamente nome, descrizione e un elenco di brani (uno per riga nel formato "Titolo - Artista"). L'intelligenza artificiale utilizza un'interfaccia open-source opzionale (inclusa tra le dipendenze di `requirements.txt`). L'interfaccia usa **Vue Router** per navigare tra la pagina principale e la sezione "About" e mostra un modale di aiuto per ottenere le credenziali Spotify.
+
+## Disclaimer
+
+⚠️ This project uses libraries that interact with third-party services in unofficial ways. Using them may violate the terms of service of OpenAI, Google or other providers. This software is provided for educational purposes only and the author takes no responsibility for any misuse.
+
 ## License
 
 This project is licensed under the MIT License.

@@ -50,36 +50,38 @@ def get_user_id(sp):
         raise
 
 def get_track_uri(sp, track_name):
-    """Retrieves the URI of a track on Spotify given a search string."""
+    """Retrieve the URI of a track on Spotify using fuzzy matching."""
     try:
-        results = sp.search(q=track_name, type='track', limit=1)
+        results = sp.search(q=track_name, type='track', limit=10)
         items = results['tracks']['items']
-        if items:
-            track = items[0]
-            track_title = track['name'].lower()
-            track_artists = [artist['name'].lower() for artist in track['artists']]
-            
-            # Separate track title from artist if specified
-            if ' - ' in track_name:
-                search_title, search_artist = track_name.lower().split(' - ', 1)
-                artist_match = any(fuzz.partial_ratio(search_artist, artist) > 30 for artist in track_artists)
-                if fuzz.partial_ratio(track_title, search_title) > 30 and artist_match:
-                    return track['uri']
-            else:
-                search_title = track_name.lower()
-                if fuzz.partial_ratio(track_title, search_title) > 30:
-                    return track['uri']
-                
-            # Check for closest match
-            if fuzz.partial_ratio(track_title, search_title) > 40:
-                logging.warning("Track '%s' not found. Closest match: '%s' by %s", track_name, track_title, ', '.join(track_artists))
-                return track['uri']
-            else:
-                logging.warning("Track '%s' not found. Closest match: '%s' by %s", track_name, track_title, ', '.join(track_artists))
-                return None
-        else:
+        if not items:
             logging.warning("Track '%s' not found.", track_name)
             return None
+
+        best_score = 0
+        best_uri = None
+        best_desc = None
+
+        for track in items:
+            track_title = track['name']
+            track_artists = [artist['name'] for artist in track['artists']]
+            candidate = f"{track_title} {' '.join(track_artists)}".lower()
+            score = fuzz.token_set_ratio(track_name.lower(), candidate)
+
+            if score > best_score:
+                best_score = score
+                best_uri = track['uri']
+                best_desc = f"{track_title} by {', '.join(track_artists)}"
+
+        if best_score < 60:
+            logging.warning(
+                "Track '%s' not found. Best match: %s (score %d)",
+                track_name,
+                best_desc,
+                best_score,
+            )
+
+        return best_uri
     except spotipy.SpotifyException as e:
         logging.error("Error searching for track '%s': %s", track_name, e)
         return None
@@ -144,3 +146,76 @@ def add_tracks_to_playlist(sp, playlist_id, tracks_to_search, playlist_name):
     except spotipy.SpotifyException as e:
         logging.error("Error updating playlist '%s': %s", playlist_name, e)
         raise
+
+
+def _ask_g4f(messages):
+    """Tenta di ottenere una risposta usando diversi provider g4f."""
+    import g4f
+    providers = [g4f.Provider.FreeGpt, g4f.Provider.You, g4f.Provider.DeepSeek]
+    for provider in providers:
+        try:
+            return g4f.ChatCompletion.create(
+                model="gpt_4o",
+                provider=provider,
+                messages=messages,
+            )
+        except Exception as exc:
+            logging.warning("Provider %s fallito: %s", getattr(provider, "__name__", provider), exc)
+    raise RuntimeError("Nessun provider g4f disponibile")
+
+
+def generate_tracks_ai(prompt, n=10):
+    """Genera una lista di titoli di canzoni usando un modello AI gratuito."""
+    import re
+    messages = [{
+        "role": "user",
+        "content": (
+            f"Elenca {n} brani in base a questo prompt: {prompt}. "
+            "Rispondi in italiano senza numerazione, "
+            "una riga per brano nel formato 'Titolo - Artista'."
+        ),
+    }]
+    try:
+        response = _ask_g4f(messages)
+    except Exception as e:
+        logging.error("Errore generazione AI: %s", e)
+        return []
+
+    tracks = []
+    for line in response.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        line = re.sub(r"^\d+[\.)]\s*", "", line)
+        parts = re.split(r"\s*(?:-|–|di|by)\s+", line, 1)
+        if len(parts) >= 2:
+            title = parts[0].strip(' "')
+            artist = parts[1].strip(' "')
+            tracks.append(f"{title} - {artist}")
+    return tracks
+
+
+def generate_playlist_details_ai(prompt):
+    """Genera nome e descrizione di una playlist dato un prompt."""
+    messages = [{
+        "role": "user",
+        "content": (
+            f"Suggerisci un nome e una breve descrizione per una playlist basata su questo prompt: {prompt}. "
+            "Rispondi in italiano nel formato:\nNome: <nome>\nDescrizione: <descrizione>"
+        ),
+    }]
+    try:
+        response = _ask_g4f(messages)
+    except Exception as e:
+        logging.error("Errore generazione AI: %s", e)
+        return "Playlist AI", "Generata automaticamente"
+
+    name = "Playlist AI"
+    description = "Generata automaticamente"
+    for line in response.splitlines():
+        line = line.strip()
+        if line.lower().startswith("nome:"):
+            name = line.split(":", 1)[1].strip()
+        elif line.lower().startswith("descr"):
+            description = line.split(":", 1)[1].strip()
+    return name, description
