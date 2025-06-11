@@ -1,56 +1,61 @@
 <template>
   <div>
-    <h1>Spotify Auto Playlist</h1>
+    <h1 class="mb-4">{{ t('home_title') }}</h1>
     <form @submit.prevent="submitForm">
-      <div class="form-group">
-        <label>
-          CLIENT_ID <span class="help" @click="showModal = true">?</span>
+      <div class="mb-3">
+        <label class="form-label">
+          {{ t('client_id') }} <span class="help" @click="showModal = true">?</span>
         </label>
-        <input type="text" v-model="client_id" required>
+        <input type="text" class="form-control" v-model="client_id" required>
       </div>
-      <div class="form-group">
-        <label>
-          CLIENT_SECRET <span class="help" @click="showModal = true">?</span>
+      <div class="mb-3">
+        <label class="form-label">
+          {{ t('client_secret') }} <span class="help" @click="showModal = true">?</span>
         </label>
-        <input type="password" v-model="client_secret" required>
+        <input type="password" class="form-control" v-model="client_secret" required>
       </div>
-      <div class="form-group">
-        <label>
-          <input type="checkbox" v-model="custom_redirect"> Custom REDIRECT_URI
-        </label>
-        <input type="text" v-model="redirect_uri" v-if="custom_redirect">
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="redirect" v-model="custom_redirect">
+        <label class="form-check-label" for="redirect">{{ t('custom_redirect') }}</label>
       </div>
-      <div class="form-group">
-        <label>Nome Playlist:</label>
-        <input type="text" v-model="playlist_name" required>
+      <div class="mb-3" v-if="custom_redirect">
+        <input type="text" class="form-control" v-model="redirect_uri">
       </div>
-      <div class="form-group">
-        <label>Descrizione Playlist:</label>
-        <input type="text" v-model="playlist_description">
+      <div class="mb-3">
+        <label class="form-label">{{ t('playlist_name') }}</label>
+        <input type="text" class="form-control" v-model="playlist_name" required>
       </div>
-      <div class="form-group">
-        <label><input type="checkbox" v-model="playlist_public"> Pubblica</label>
+      <div class="mb-3">
+        <label class="form-label">{{ t('playlist_description') }}</label>
+        <input type="text" class="form-control" v-model="playlist_description">
       </div>
-      <div class="form-group">
-        <label>Tracce (una per riga):</label>
-        <textarea v-model="tracks_text" rows="10"></textarea>
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="public" v-model="playlist_public">
+        <label class="form-check-label" for="public">{{ t('public') }}</label>
       </div>
-      <div class="form-group">
-        <label>Prompt AI:</label>
-        <input type="text" v-model="ai_prompt" placeholder="es. rock italiano anni 90">
-        <button type="button" @click="generateTracks" :disabled="loading">Genera con AI</button>
+      <div class="mb-3">
+        <label class="form-label">{{ t('tracks') }}</label>
+        <textarea class="form-control" v-model="tracks_text" rows="10"></textarea>
       </div>
-      <button type="submit">Crea Playlist</button>
+      <div class="mb-3">
+        <label class="form-label">{{ t('ai_prompt') }}</label>
+        <div class="input-group">
+          <input type="text" class="form-control" v-model="ai_prompt" :placeholder="t('placeholder_prompt')">
+          <button type="button" class="btn btn-secondary" @click="generateTracks" :disabled="loading">{{ t('generate_ai') }}</button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">{{ t('create_playlist') }}</button>
     </form>
-    <p class="loading" v-if="loading">Generazione in corso...</p>
+    <p class="loading" v-if="loading">{{ t('generating') }}</p>
     <p v-if="message">{{ message }}</p>
     <InfoModal v-if="showModal" @close="showModal = false" />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import InfoModal from './InfoModal.vue'
+const t = inject('t')
 
 const client_id = ref('')
 const client_secret = ref('')
@@ -82,10 +87,10 @@ function submitForm() {
   })
     .then(r => r.json())
     .then(data => {
-      message.value = data.status === 'success' ? 'Playlist aggiornata!' : 'Errore'
+      message.value = data.status === 'success' ? t('success') : t('error')
     })
     .catch(() => {
-      message.value = 'Errore di rete'
+      message.value = t('network_error')
     })
 }
 
@@ -105,7 +110,7 @@ function generateTracks() {
       loading.value = false
     })
     .catch(() => {
-      message.value = 'Errore generazione AI'
+      message.value = t('ai_error')
       loading.value = false
     })
 }
