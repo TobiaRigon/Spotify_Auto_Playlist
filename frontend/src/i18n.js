@@ -37,7 +37,8 @@ export const messages = {
     info_title: 'How to obtain Spotify credentials',
     info_body: '1. Go to <a href="https://developer.spotify.com/dashboard/applications" target="_blank">Spotify Developer Dashboard</a>.<br>2. Log in with your Spotify account and click "Create an App".<br>3. Enter any name and description.<br>4. In the <strong>Redirect URI</strong> section, add: <code>http://localhost:8888/callback/</code><br>5. Open the app details and copy your <strong>Client ID</strong> and <strong>Client Secret</strong>.',
     close: 'Close',
-    language: 'Language'
+    language: 'Language',
+    update_note: 'If you enter the name of an existing playlist, it will be updated instead of creating a new one.'
   },
   it: {
     nav_home: 'Home',
@@ -71,7 +72,8 @@ export const messages = {
     info_title: 'Come ottenere le credenziali Spotify',
     info_body: '1. Vai al <a href="https://developer.spotify.com/dashboard/applications" target="_blank">Spotify Developer Dashboard</a>.<br>2. Accedi con il tuo account Spotify e clicca su “Create an App”.<br>3. Inserisci nome e descrizione dell\'app (puoi mettere qualsiasi cosa).<br>4. Durante la creazione, nella sezione <strong>Redirect URI</strong>, inserisci: <code>http://localhost:8888/callback/</code><br>5. Una volta creata l\'app, accedi ai suoi dettagli e copia <strong>Client ID</strong> e <strong>Client Secret</strong>.',
     close: 'Chiudi',
-    language: 'Lingua'
+    language: 'Lingua',
+    update_note: 'Se indichi il nome di una playlist esistente, verr\u00e0 aggiornata invece di crearne una nuova.'
   }
 }
 

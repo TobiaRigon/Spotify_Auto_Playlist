@@ -2,6 +2,7 @@
   <div>
     <h1>{{ t('about_title') }}</h1>
     <p>{{ t('about_desc') }}</p>
+    <p>{{ t('update_note') }}</p>
     <ol>
       <li v-html="t('about_step1')"></li>
       <li>{{ t('about_step2') }}</li>

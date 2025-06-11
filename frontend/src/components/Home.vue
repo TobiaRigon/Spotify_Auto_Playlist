@@ -24,6 +24,7 @@
       <div class="mb-3">
         <label class="form-label">{{ t('playlist_name') }}</label>
         <input type="text" class="form-control" v-model="playlist_name" required>
+        <div class="form-text">{{ t('update_note') }}</div>
       </div>
       <div class="mb-3">
         <label class="form-label">{{ t('playlist_description') }}</label>
