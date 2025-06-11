@@ -8,3 +8,4 @@ curl_cffi
 undetected-chromedriver
 platformdirs
 nest_asyncio
+flask
